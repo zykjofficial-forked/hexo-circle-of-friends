@@ -4,7 +4,7 @@ import datetime
 from operator import itemgetter
 import leancloud
 import sys
-
+import re
 
 
 def main():
@@ -284,10 +284,28 @@ def main():
     result = get_data(friendpage_link)
     soup = BeautifulSoup(result, 'html.parser')
     main_content = soup.find_all(id='article-container')
-    link_list = main_content[0].find_all('a')
+    link_list = main_content[0].find_all('.flink-list-item a')
     imglist = main_content[0].find_all('img')
     friend_poor = []
     post_poor = []
+    gitee_repo = "https://gitee.com/api/v5/repos/zykjofficial/friends/issues?state=open&sort=created&direction=asc&page=1&per_page=100"
+    gitee_links = requests.get(url=gitee_repo).json()
+    for gitee_link in gitee_links:
+        try:
+            if gitee_link['labels']:
+                reg = '//(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+                link = "https:" + re.findall(re.compile(reg),
+                                             gitee_link['body'])[0]
+                img = "https:" + re.findall(re.compile(reg),
+                                            gitee_link['body'])[1]
+                name = re.findall(re.compile('name: (.*)'), gitee_link['body'])[0]
+                user_info = []
+                user_info.append(name)
+                user_info.append(link)
+                user_info.append(img)
+                friend_poor.append(user_info)
+        except Exception:
+            raise Exception('Gitee友链格式错误,请检查格式！！！')
     for index, item in enumerate(link_list):
         link = item.get('href')
         name = item.get('title')
