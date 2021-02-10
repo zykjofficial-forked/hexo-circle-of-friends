@@ -2,15 +2,11 @@
 name: update-friends-posts
 
 on: 
-  release:
-    types: [published]
-  push:
-    tags:
-    - 'v*'
-  #  branches: 
-  #    - master
   schedule:
-    - cron: "*/30 0-15 * * *"
+    - cron: "*/30 0-15 * * *"    
+  push:
+    branches: 
+      - main
   watch:
     types: [started]
    
