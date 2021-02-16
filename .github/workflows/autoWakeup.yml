@@ -3,7 +3,7 @@ name: update-friends-posts
 
 on: 
   schedule:
-    - cron: "*/30 0-15 * * *"    
+    - cron: "*/60 0-15 * * *"    
   push:
     branches: 
       - main
